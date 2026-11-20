@@ -6,7 +6,7 @@ built as a timed take home exercise.
 ## Links
 
 - Live product: https://teamdocs-gamma.vercel.app
-- Walkthrough video: [VIDEO_URL]
+- Walkthrough video: https://www.loom.com/share/978ff211add24e9d93e41c5ff0c12b48
 - Source code: this folder, and on GitHub at https://github.com/paraflix246-pixel/teamdocs
 
 ## What is included
@@ -17,7 +17,7 @@ built as a timed take home exercise.
 - [x] AI_WORKFLOW.md, how AI tools were used on this build
 - [x] SUBMISSION.md, this file
 - [x] A live deployment reviewers can open
-- [ ] Walkthrough video link (also pasted in the portal form)
+- [x] Walkthrough video link (also pasted in the portal form)
 
 ## Test accounts
 
