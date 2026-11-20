@@ -42,7 +42,7 @@ each piece as it landed and ran the verification steps myself.
 
 ## How I verified
 
-- `npm test`: the access rule suite passes (7 tests).
+- `npm test`: 8 tests pass. Seven cover the access rules directly, and one is a route test that runs the real API handlers and confirms Sam gets a 403 on a document he has no access to.
 - `npm run build`: the production build passes, including type checking.
 - Manual smoke against the dev server with curl: created a document as
   Alex, shared it with Maria, confirmed it appears in Maria's list as

@@ -7,7 +7,7 @@ built as a timed take home exercise.
 
 - Live product: https://teamdocs-gamma.vercel.app
 - Walkthrough video: [VIDEO_URL]
-- Source code: this folder
+- Source code: this folder, and on GitHub at https://github.com/paraflix246-pixel/teamdocs
 
 ## What is included
 
