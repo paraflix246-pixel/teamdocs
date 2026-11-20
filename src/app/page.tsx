@@ -9,7 +9,13 @@ import {
   saveCurrentUserId,
   type DocumentSummary,
 } from "@/lib/client";
-import { fileTextToHtml, isSupportedUpload, titleFromFileName } from "@/lib/convert";
+import {
+  fileTextToHtml,
+  isSupportedUpload,
+  MAX_UPLOAD_BYTES,
+  MAX_UPLOAD_LABEL,
+  titleFromFileName,
+} from "@/lib/convert";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -84,6 +90,12 @@ export default function HomePage() {
       );
       return;
     }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setUploadError(
+        `That file is too big. Uploads are limited to ${MAX_UPLOAD_LABEL}. Please choose a smaller .txt or .md file.`,
+      );
+      return;
+    }
     setUploadError(null);
     setBusy(true);
     try {
@@ -154,7 +166,10 @@ export default function HomePage() {
             hidden
             onChange={handleUpload}
           />
-          <span className="hint">Uploads: .txt and .md files become new documents.</span>
+          <span className="hint">
+            Uploads: .txt and .md files, up to {MAX_UPLOAD_LABEL}, become new
+            documents.
+          </span>
         </div>
 
         {uploadError && <p className="error-text">{uploadError}</p>}
@@ -166,7 +181,8 @@ export default function HomePage() {
             <p className="empty-text">Loading...</p>
           ) : mine.length === 0 ? (
             <p className="empty-text">
-              No documents yet. Create one, or upload a .txt or .md file.
+              No documents yet. Create one, or upload a .txt or .md file (up
+              to {MAX_UPLOAD_LABEL}).
             </p>
           ) : (
             <div className="doc-grid">

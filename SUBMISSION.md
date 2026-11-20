@@ -5,18 +5,18 @@ built as a timed take home exercise.
 
 ## Links
 
-- Live product: [LIVE_URL]
+- Live product: https://teamdocs-gamma.vercel.app
 - Walkthrough video: [VIDEO_URL]
 - Source code: this folder
 
 ## What is included
 
-- [ ] Source code for the full app (Next.js, TypeScript, TipTap, libSQL)
-- [ ] README.md with setup and run instructions
-- [ ] ARCHITECTURE.md, what was prioritized and why
-- [ ] AI_WORKFLOW.md, how AI tools were used on this build
-- [ ] SUBMISSION.md, this file
-- [ ] A live deployment reviewers can open
+- [x] Source code for the full app (Next.js, TypeScript, TipTap, libSQL)
+- [x] README.md with setup and run instructions
+- [x] ARCHITECTURE.md, what was prioritized and why
+- [x] AI_WORKFLOW.md, how AI tools were used on this build
+- [x] SUBMISSION.md, this file
+- [x] A live deployment reviewers can open
 - [ ] Walkthrough video link (also pasted in the portal form)
 
 ## Test accounts
@@ -48,12 +48,14 @@ TURSO_AUTH_TOKEN. Run the tests with `npm test`.
 - Create, rename, edit, and delete documents
 - Rich text: bold, italic, underline, H1, H2, bullet and numbered lists
 - Autosave with a visible Saving... / Saved status
-- Upload .txt and .md files as new documents (other types are rejected
-  with a clear message, and the limit is stated in the UI)
+- Upload .txt and .md files, up to 100 KB, as new documents (other types
+  and oversized files are rejected with a clear message, and the limits
+  are stated in the UI)
 - Sharing: owner grants or revokes access per user, enforced on the server
 - Owned versus shared documents, with a Shared badge and owner name
 - Persistence across refresh, for both content and sharing
-- Automated tests for the access rules (7 tests, passing)
+- Automated tests for the access rules, plus one API route test covering
+  the 403 case (8 tests, passing)
 
 ## What is incomplete
 

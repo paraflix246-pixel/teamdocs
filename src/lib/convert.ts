@@ -2,6 +2,11 @@
 // editor stores. Supported types are deliberately limited to .txt and .md,
 // and the UI says so next to the Upload button.
 
+// Uploads are capped at 100 KB. The home page checks the file size before
+// reading the file, and the limit is stated next to the Upload button.
+export const MAX_UPLOAD_BYTES = 100 * 1024;
+export const MAX_UPLOAD_LABEL = "100 KB";
+
 export function isSupportedUpload(fileName: string): boolean {
   const lower = fileName.toLowerCase();
   return lower.endsWith(".txt") || lower.endsWith(".md");

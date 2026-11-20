@@ -100,23 +100,69 @@ function EditorArea({
   const [titleError, setTitleError] = useState<string | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
   const saveTimer = useRef<number | null>(null);
+  // The newest content that has not been confirmed saved yet. It lives in a
+  // ref so the flush on page leave can send it without touching the editor,
+  // which may already be torn down by then.
+  const pendingHtml = useRef<string | null>(null);
+
+  // Sends the pending content, if any. Any failure, an HTTP error or a
+  // network level throw, lands on the same "Could not save" status, and the
+  // content stays pending so a later flush can retry it.
+  const flushSave = useCallback(
+    async (keepalive: boolean) => {
+      const html = pendingHtml.current;
+      if (html === null) return;
+      pendingHtml.current = null;
+      try {
+        const res = await apiFetch(`/api/documents/${doc.id}`, userId, {
+          method: "PATCH",
+          body: JSON.stringify({ contentHtml: html }),
+          keepalive,
+        });
+        if (res.ok) {
+          setSaveStatus("saved");
+        } else {
+          if (pendingHtml.current === null) pendingHtml.current = html;
+          setSaveStatus("error");
+        }
+      } catch {
+        if (pendingHtml.current === null) pendingHtml.current = html;
+        setSaveStatus("error");
+      }
+    },
+    [doc.id, userId],
+  );
 
   const editor = useEditor({
     extensions: [StarterKit],
     content: doc.contentHtml || "<p></p>",
     immediatelyRender: false,
     onUpdate: ({ editor: current }) => {
+      pendingHtml.current = current.getHTML();
       setSaveStatus("saving");
       if (saveTimer.current) window.clearTimeout(saveTimer.current);
-      saveTimer.current = window.setTimeout(async () => {
-        const res = await apiFetch(`/api/documents/${doc.id}`, userId, {
-          method: "PATCH",
-          body: JSON.stringify({ contentHtml: current.getHTML() }),
-        });
-        setSaveStatus(res.ok ? "saved" : "error");
+      saveTimer.current = window.setTimeout(() => {
+        void flushSave(false);
       }, 800);
     },
   });
+
+  // Flush a pending save when the page is hidden or closed, and when this
+  // editor unmounts (for example navigating back to the document list), so
+  // edits typed inside the debounce window are not lost.
+  useEffect(() => {
+    const flushWithKeepalive = () => {
+      void flushSave(true);
+    };
+    window.addEventListener("pagehide", flushWithKeepalive);
+    window.addEventListener("beforeunload", flushWithKeepalive);
+    return () => {
+      window.removeEventListener("pagehide", flushWithKeepalive);
+      window.removeEventListener("beforeunload", flushWithKeepalive);
+      if (saveTimer.current) window.clearTimeout(saveTimer.current);
+      void flushSave(true);
+    };
+  }, [flushSave]);
 
   async function commitTitle() {
     const trimmed = title.trim();

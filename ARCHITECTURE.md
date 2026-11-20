@@ -71,12 +71,15 @@ sections and the Shared badge come straight from the data.
 
 - The editor autosaves with an 800ms debounce and a plain status label that
   cycles between Saving... and Saved. A failed save shows Could not save
-  instead of silently pretending.
+  instead of silently pretending, whether the server rejected it or the
+  network dropped. If I leave the page with a save still pending, the
+  editor flushes that last save on the way out, so the final keystrokes
+  are not lost.
 - Rename happens in place on the title field, committed on blur or Enter,
   with empty titles rejected by both the client and the API.
 - Upload conversion is intentionally naive (headings and paragraphs only)
-  and the supported types, .txt and .md, are stated in the UI next to the
-  button rather than buried in this document.
+  and the supported types, .txt and .md, and the 100 KB size limit are
+  stated in the UI next to the button rather than buried in this document.
 
 ## What I would build next
 

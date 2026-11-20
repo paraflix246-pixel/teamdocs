@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { ensureSchema, getDb } from "@/lib/db";
 import { errorJson, userIdFromRequest } from "@/lib/api-helpers";
+import { MAX_UPLOAD_BYTES, MAX_UPLOAD_LABEL } from "@/lib/convert";
 import { getUser } from "@/lib/users";
 
 // GET /api/documents: everything the current user owns, plus everything
@@ -51,6 +52,20 @@ export async function POST(request: Request) {
       : "Untitled document";
   const contentHtml =
     typeof body.contentHtml === "string" ? body.contentHtml : "";
+
+  // Backstop for the upload size limit. The client checks the file size
+  // before converting, and the converted HTML of a file at the limit stays
+  // well under this ceiling even with escaping and paragraph tags, so
+  // anything bigger did not come through the upload flow.
+  if (
+    new TextEncoder().encode(contentHtml).length >
+    MAX_UPLOAD_BYTES * 8
+  ) {
+    return errorJson(
+      `That file is too big. Uploads are limited to ${MAX_UPLOAD_LABEL}.`,
+      400,
+    );
+  }
 
   await ensureSchema();
   const now = new Date().toISOString();
